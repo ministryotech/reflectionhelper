@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>The Ministry of Technology</authors>
+    <owners>The Ministry of Technology</owners>
+    <licenseUrl>http://www.opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://bitbucket.org/ministryotech/reflectionhelper</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>$description$</description>
+    <copyright>Copyright 2014</copyright>
+    <releaseNotes>Initial release.</releaseNotes>
+    <tags>Reflection</tags>
+  </metadata>
+</package>
