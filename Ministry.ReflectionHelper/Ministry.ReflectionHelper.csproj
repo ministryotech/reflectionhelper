@@ -34,8 +34,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Ministry.StrongTyped">
-      <HintPath>..\packages\Ministry.StrongTyped.1.2.1.0\lib\net40\Ministry.StrongTyped.dll</HintPath>
+    <Reference Include="Ministry.StrongTyped, Version=1.2.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Ministry.StrongTyped.1.2.2.0\lib\net40\Ministry.StrongTyped.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />

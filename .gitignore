@@ -3,3 +3,4 @@ Ministry.ReflectionHelper/bin/
 */obj/
 *.suo
 *.user
+packages/
