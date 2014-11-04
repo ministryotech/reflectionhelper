@@ -8,7 +8,7 @@
     <ProjectGuid>{E862D79C-EC30-40F7-9790-92100502E254}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Ministry.Reflection</RootNamespace>
+    <RootNamespace>Ministry.ReflectionHelper</RootNamespace>
     <AssemblyName>Ministry.ReflectionHelper</AssemblyName>
     <TargetFrameworkVersion>v4.0</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
@@ -34,6 +34,9 @@
     <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Ministry.StrongTyped">
+      <HintPath>..\packages\Ministry.StrongTyped.1.2.1.0\lib\net40\Ministry.StrongTyped.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Web" />
@@ -45,14 +48,14 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Enums.cs" />
-    <Compile Include="FieldHelper.cs" />
-    <Compile Include="MethodHelper.cs" />
+    <Compile Include="Field.cs" />
+    <Compile Include="Method.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="PropertyHelper.cs" />
-    <Compile Include="ReflectionHelper.cs" />
+    <Compile Include="Property.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Ministry.ReflectionHelper.nuspec" />
+    <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
