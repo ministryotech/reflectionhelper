@@ -89,11 +89,11 @@ Welcome to The Ministry of Technology open source products. All open source Mini
 
 Our other open source repositories can be found here...
 
-[https://bitbucket.org/ministryotech](https://bitbucket.org/ministryotech)
+* [https://bitbucket.org/ministryotech](https://bitbucket.org/ministryotech)
+* [https://github.com/ministryotech](https://github.com/ministryotech)
+* [https://github.com/tiefling](https://github.com/tiefling)
 
-[https://github.com/tiefling](https://github.com/tiefling)
-
-Most of our content is stored on BitBucket, but we also do some Umbraco related projects and with Umbraco itself hosted on GitHub it made sense to host those there too.
+Most of our content is stored on both Github and Bitbucket.
 
 ### Where can I get it? ###
 You can download the package for this project from any of the following package managers...
