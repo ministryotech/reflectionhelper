@@ -13,6 +13,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Globalization;
 using Ministry.StrongTyped;
@@ -341,16 +342,14 @@ namespace Ministry.ReflectionHelper
             MethodInfo mi = null;
 
             var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static);
+            
+            // ReSharper disable once LoopCanBeConvertedToQuery
             foreach (var method in methods)
             {
                 if (method.Name != methodName || method.IsGenericMethod) continue;
                 var parameters = method.GetParameters();
                 if (parameters.Length != parameterTypes.Length) continue;
-                var found = true;
-                for (var i = 0; i < parameters.Length; i++)
-                {
-                    if (parameters[i].ParameterType != parameterTypes[i]) found = false;
-                }
+                var found = !parameters.Where((t, i) => !t.ParameterType.IsAssignableFrom(parameterTypes[i])).Any();
                 if (!found) continue;
                 mi = method;
                 break;
@@ -402,11 +401,7 @@ namespace Ministry.ReflectionHelper
                     var parameters = generic.GetParameters();
                     if (parameterTypes == null) parameterTypes = new Type[0];
                     if (parameters.Length != parameterTypes.Length) continue;
-                    var found = true;
-                    for (var i = 0; i < parameters.Length; i++)
-                    {
-                        if (parameters[i].ParameterType != parameterTypes[i]) found = false;
-                    }
+                    var found = !parameters.Where((t, i) => !t.ParameterType.IsAssignableFrom(parameterTypes[i])).Any();
                     if (!found) continue;
                     mi = generic;
                     break;
