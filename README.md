@@ -84,6 +84,9 @@ Provides you with the info about the parameters for a given method.
 ## Summary ##
 That's the key functionality of the Ministry.ReflectionHelper classes. If you want to do any kind of deep reflection and you don't have the joy of the Dynamic Language Runtime to help you out then I hope you'll find some of the methods in these classes really useful. If you want to find out any more, simply check out the source code.
 
+## Upgrading v2.x to v3.x ##
+If you are upgrading from v2 or less to v3 you will find breaking changes in the Methods Execute signatures that may requires some reworking. For the most part these changes should not impact you but a few edge cases may be affected. This change was essential to rpevent a nasty bug with null value types.
+
 ## The Ministry of Technology Open Source Products ##
 Welcome to The Ministry of Technology open source products. All open source Ministry of Technology products are distributed under the MIT License for maximum re-usability. Details on more of our products and services can be found on our website at http://www.ministryotech.co.uk
 

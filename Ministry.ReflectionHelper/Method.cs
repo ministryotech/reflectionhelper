@@ -25,10 +25,10 @@ namespace Ministry.ReflectionHelper
     /// </summary>
     public static class Method
     {
-        #region | Execute |
+        #region | Execute (void) |
 
         /// <summary>
-        /// Executes a method on an object.
+        /// Executes a method on an object instance that returns nothing.
         /// </summary>
         /// <param name="value">The object to execute the method from.</param>
         /// <param name="methodName">The name of the method to execute.</param>
@@ -36,11 +36,114 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(object value, string methodName)
         {
-            Execute(value, methodName, null, null, null);
+            TriggerExecute(value, methodName, null, null, null);
         }
 
         /// <summary>
-        /// Executes a method on an object.
+        /// Executes a method on an object instance that returns nothing.
+        /// </summary>
+        /// <param name="value">The object to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <returns>The return value of the method, or null.</returns>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(object value, string methodName, params object[] methodParameters)
+        {
+            TriggerExecute(value, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
+        }
+
+        /// <summary>
+        /// Executes a method on an object instance that returns nothing.
+        /// </summary>
+        /// <param name="value">The object to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(object value, string methodName, params MethodParameter[] methodParameters)
+        {
+            TriggerExecute(value, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+                ConstructMethodParameterValuesArrayFromObject(methodParameters));
+        }
+
+        /// <summary>
+        /// Executes a method on an object instance that returns nothing.
+        /// </summary>
+        /// <param name="value">The object to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="parameterTypes">An array of type arguments for method parameters.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(object value, string methodName, Type[] parameterTypes, object[] methodParameters)
+        {
+            TriggerExecute(value, methodName, null, parameterTypes, methodParameters);
+        }
+
+        #region | Statics |
+
+        /// <summary>
+        /// Executes a method on a static object that returns nothing.
+        /// </summary>
+        /// <param name="staticType">The type of the class to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(Type staticType, string methodName)
+        {
+            TriggerExecute(staticType, methodName, null, null, null);
+        }
+
+        /// <summary>
+        /// Executes a method on a static object that returns nothing.
+        /// </summary>
+        /// <param name="staticType">The type of the class to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(Type staticType, string methodName, params object[] methodParameters)
+        {
+            TriggerExecute(staticType, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
+        }
+
+        /// <summary>
+        /// Executes a method on a static object that returns nothing.
+        /// </summary>
+        /// <param name="staticType">The type of the class to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(Type staticType, string methodName, params MethodParameter[] methodParameters)
+        {
+            TriggerExecute(staticType, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters), 
+                ConstructMethodParameterValuesArrayFromObject(methodParameters));
+        }
+
+        /// <summary>
+        /// Executes a method on a static object that returns nothing.
+        /// </summary>
+        /// <param name="staticType">The type of the class to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="parameterTypes">An array of type arguments for method parameters.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(Type staticType, string methodName, Type[] parameterTypes, object[] methodParameters)
+        {
+            TriggerExecute(staticType, methodName, null, parameterTypes, methodParameters);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region | Execute (T) |
+
+        /// <summary>
+        /// Executes a method on an object instance that returns a value.
         /// </summary>
         /// <typeparam name="T">The type of the return value from the method.</typeparam>
         /// <param name="value">The object to execute the method from.</param>
@@ -50,24 +153,11 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(object value, string methodName)
         {
-            return Execute<T>(value, methodName, null, null, null);
+            return TriggerExecuteAndReturn<T>(value, methodName, null, null, null);
         }
 
         /// <summary>
-        /// Executes a method on an object.
-        /// </summary>
-        /// <param name="value">The object to execute the method from.</param>
-        /// <param name="methodName">The name of the method to execute.</param>
-        /// <param name="methodParameters">Parameters required to execute the method.</param>
-        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
-        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
-        public static void Execute(object value, string methodName, params object[] methodParameters)
-        {
-            Execute(value, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
-        }
-
-        /// <summary>
-        /// Executes a method on an object.
+        /// Executes a method on an object instance that returns a value.
         /// </summary>
         /// <param name="value">The object to execute the method from.</param>
         /// <param name="methodName">The name of the method to execute.</param>
@@ -77,91 +167,45 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(object value, string methodName, params object[] methodParameters)
         {
-            return Execute<T>(value, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
+            return TriggerExecuteAndReturn<T>(value, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
         }
 
         /// <summary>
-        /// Executes a method on an object.
-        /// </summary>
-        /// <param name="value">The object to execute the method from.</param>
-        /// <param name="methodName">The name of the method to execute.</param>
-        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
-        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
-        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
-        public static void Execute(object value, string methodName, Type[] typeArguments)
-        {
-            Execute(value, methodName, typeArguments, null, null);
-        }
-
-        /// <summary>
-        /// Executes a method on an object.
+        /// Executes a method on an object instance that returns a value.
         /// </summary>
         /// <typeparam name="T">The type of the method return value.</typeparam>
         /// <param name="value">The object to execute the method from.</param>
         /// <param name="methodName">The name of the method to execute.</param>
-        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
         /// <returns>The return value of the method, or null.</returns>
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
-        public static T Execute<T>(object value, string methodName, Type[] typeArguments)
+        public static T Execute<T>(object value, string methodName, params MethodParameter[] methodParameters)
         {
-            return Execute<T>(value, methodName, typeArguments, null, null);
+            return TriggerExecuteAndReturn<T>(value, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+                ConstructMethodParameterValuesArrayFromObject(methodParameters));
         }
 
         /// <summary>
-        /// Executes a method on an object.
-        /// </summary>
-        /// <param name="value">The object to execute the method from.</param>
-        /// <param name="methodName">The name of the method to execute.</param>
-        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
-        /// <param name="parameterTypes">An array of type arguments for method parameters.</param>
-        /// <param name="methodParameters">Parameters required to execute the method.</param>
-        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
-        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
-        public static void Execute(object value, string methodName, Type[] typeArguments, Type[] parameterTypes, params object[] methodParameters)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
-
-            var mi = GetInfo(value.GetType(), methodName, typeArguments, parameterTypes);
-            mi.Invoke(value, methodParameters);
-        }
-
-        /// <summary>
-        /// Executes a method on an object.
+        /// Executes a method on an object instance that returns a value.
         /// </summary>
         /// <typeparam name="T">The type of the method return value.</typeparam>
         /// <param name="value">The object to execute the method from.</param>
         /// <param name="methodName">The name of the method to execute.</param>
-        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
         /// <param name="parameterTypes">An array of type arguments for method parameters.</param>
         /// <param name="methodParameters">Parameters required to execute the method.</param>
         /// <returns>The return value of the method, or null.</returns>
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
-        public static T Execute<T>(object value, string methodName, Type[] typeArguments, Type[] parameterTypes, params object[] methodParameters)
+        public static T Execute<T>(object value, string methodName, Type[] parameterTypes, object[] methodParameters)
         {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
-
-            var mi = GetInfo(value.GetType(), methodName, typeArguments, parameterTypes);
-            return (T)mi.Invoke(value, methodParameters);
+            return TriggerExecuteAndReturn<T>(value, methodName, null, parameterTypes, methodParameters);
         }
 
-        /// <summary>
-        /// Executes a method on an object.
-        /// </summary>
-        /// <param name="staticType">The type of the class to execute the method from.</param>
-        /// <param name="methodName">The name of the method to execute.</param>
-        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
-        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
-        public static void Execute(Type staticType, string methodName)
-        {
-            Execute(staticType, methodName, null, null, null);
-        }
+        #region | Statics |
 
         /// <summary>
-        /// Executes a method on an object.
+        /// Executes a method on a static object that returns a value.
         /// </summary>
         /// <typeparam name="T">The type of the method return value.</typeparam>
         /// <param name="staticType">The type of the class to execute the method from.</param>
@@ -171,24 +215,11 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(Type staticType, string methodName)
         {
-            return Execute<T>(staticType, methodName, null, null, null);
+            return TriggerExecuteAndReturn<T>(staticType, methodName, null, null, null);
         }
 
         /// <summary>
-        /// Executes a method on an object.
-        /// </summary>
-        /// <param name="staticType">The type of the class to execute the method from.</param>
-        /// <param name="methodName">The name of the method to execute.</param>
-        /// <param name="methodParameters">Parameters required to execute the method.</param>
-        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
-        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
-        public static void Execute(Type staticType, string methodName, params object[] methodParameters)
-        {
-            Execute(staticType, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
-        }
-
-        /// <summary>
-        /// Executes a method on an object.
+        /// Executes a method on a static object that returns a value.
         /// </summary>
         /// <typeparam name="T">The type of the method return value.</typeparam>
         /// <param name="staticType">The type of the class to execute the method from.</param>
@@ -199,11 +230,95 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(Type staticType, string methodName, params object[] methodParameters)
         {
-            return Execute<T>(staticType, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
+            return TriggerExecuteAndReturn<T>(staticType, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
         }
 
         /// <summary>
-        /// Executes a method on an object.
+        /// Executes a method on a static object that returns a value.
+        /// </summary>
+        /// <typeparam name="T">The type of the method return value.</typeparam>
+        /// <param name="staticType">The type of the class to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <returns>The return value of the method, or null.</returns>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static T Execute<T>(Type staticType, string methodName, params MethodParameter[] methodParameters)
+        {
+            return TriggerExecuteAndReturn<T>(staticType, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+                ConstructMethodParameterValuesArrayFromObject(methodParameters));
+        }
+
+        /// <summary>
+        /// Executes a method on a static object that returns a value.
+        /// </summary>
+        /// <typeparam name="T">The type of the method return value.</typeparam>
+        /// <param name="staticType">The type of the class to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="parameterTypes">An array of type arguments for method parameters.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <returns>The return value of the method, or null.</returns>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static T Execute<T>(Type staticType, string methodName, Type[] parameterTypes, object[] methodParameters)
+        {
+            return TriggerExecuteAndReturn<T>(staticType, methodName, null, parameterTypes, methodParameters);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region | Execute (Generic Method - void) |
+
+        /// <summary>
+        /// Executes a method on a generic object instance that returns nothing.
+        /// </summary>
+        /// <param name="value">The object to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(object value, string methodName, Type[] typeArguments)
+        {
+            TriggerExecute(value, methodName, typeArguments, null, null);
+        }
+
+        /// <summary>
+        /// Executes a method on a generic object instance that returns nothing.
+        /// </summary>
+        /// <param name="value">The object to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <returns>The return value of the method, or null.</returns>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(object value, string methodName, Type[] typeArguments, params MethodParameter[] methodParameters)
+        {
+            TriggerExecute(value, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+                ConstructMethodParameterValuesArrayFromObject(methodParameters));
+        }
+
+        /// <summary>
+        /// Executes a method on a generic object instance that returns nothing.
+        /// </summary>
+        /// <param name="value">The object to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
+        /// <param name="parameterTypes">An array of type arguments for method parameters.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(object value, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
+        {
+            TriggerExecute(value, methodName, typeArguments, parameterTypes, methodParameters);
+        }
+
+        #region | Statics |
+
+        /// <summary>
+        /// Executes a method on a static generic object that returns nothing.
         /// </summary>
         /// <param name="staticType">The type of the class to execute the method from.</param>
         /// <param name="methodName">The name of the method to execute.</param>
@@ -212,11 +327,98 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(Type staticType, string methodName, Type[] typeArguments)
         {
-            Execute(staticType, methodName, typeArguments, null, null);
+            TriggerExecute(staticType, methodName, typeArguments, null, null);
         }
 
         /// <summary>
-        /// Executes a method on an object.
+        /// Executes a method on a static generic object that returns nothing.
+        /// </summary>
+        /// <param name="staticType">The type of the class to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(Type staticType, string methodName, Type[] typeArguments, params MethodParameter[] methodParameters)
+        {
+            TriggerExecute(staticType, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+                ConstructMethodParameterValuesArrayFromObject(methodParameters));
+        }
+
+        /// <summary>
+        /// Executes a method on a static generic object that returns nothing.
+        /// </summary>
+        /// <param name="staticType">The type of the class to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
+        /// <param name="parameterTypes">An array of type arguments for method parameters.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static void Execute(Type staticType, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
+        {
+            TriggerExecute(staticType, methodName, typeArguments, parameterTypes, methodParameters);
+        }
+
+        #endregion
+
+        #endregion
+
+        #region | Execute (Generic Method - T) |
+
+        /// <summary>
+        /// Executes a method on a generic object instance that returns a value.
+        /// </summary>
+        /// <typeparam name="T">The type of the method return value.</typeparam>
+        /// <param name="value">The object to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
+        /// <returns>The return value of the method, or null.</returns>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static T Execute<T>(object value, string methodName, Type[] typeArguments)
+        {
+            return TriggerExecuteAndReturn<T>(value, methodName, typeArguments, null, null);
+        }
+
+        /// <summary>
+        /// Executes a method on a generic object instance that returns a value.
+        /// </summary>
+        /// <typeparam name="T">The type of the method return value.</typeparam>
+        /// <param name="value">The object to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <returns>The return value of the method, or null.</returns>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static T Execute<T>(object value, string methodName, Type[] typeArguments, params MethodParameter[] methodParameters)
+        {
+            return TriggerExecuteAndReturn<T>(value, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+                ConstructMethodParameterValuesArrayFromObject(methodParameters));
+        }
+
+        /// <summary>
+        /// Executes a method on a generic object instance that returns a value.
+        /// </summary>
+        /// <typeparam name="T">The type of the method return value.</typeparam>
+        /// <param name="value">The object to execute the method from.</param>
+        /// <param name="methodName">The name of the method to execute.</param>
+        /// <param name="typeArguments">An array of type arguments for a generic method.</param>
+        /// <param name="parameterTypes">An array of type arguments for method parameters.</param>
+        /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <returns>The return value of the method, or null.</returns>
+        /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
+        /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
+        public static T Execute<T>(object value, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
+        {
+            return TriggerExecuteAndReturn<T>(value, methodName, typeArguments, parameterTypes, methodParameters);
+        }
+
+        #region | Statics |
+
+        /// <summary>
+        /// Executes a method on a static generic object that returns a value.
         /// </summary>
         /// <typeparam name="T">The type of the method return value.</typeparam>
         /// <param name="staticType">The type of the class to execute the method from.</param>
@@ -227,30 +429,28 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(Type staticType, string methodName, Type[] typeArguments)
         {
-            return Execute<T>(staticType, methodName, typeArguments, null, null);
+            return TriggerExecuteAndReturn<T>(staticType, methodName, typeArguments, null, null);
         }
 
         /// <summary>
-        /// Executes a method on an object.
+        /// Executes a method on a static generic object that returns a value.
         /// </summary>
+        /// <typeparam name="T">The type of the method return value.</typeparam>
         /// <param name="staticType">The type of the class to execute the method from.</param>
         /// <param name="methodName">The name of the method to execute.</param>
         /// <param name="typeArguments">An array of type arguments for a generic method.</param>
-        /// <param name="parameterTypes">An array of type arguments for method parameters.</param>
         /// <param name="methodParameters">Parameters required to execute the method.</param>
+        /// <returns>The return value of the method, or null.</returns>
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
-        public static void Execute(Type staticType, string methodName, Type[] typeArguments, Type[] parameterTypes, params object[] methodParameters)
+        public static T Execute<T>(Type staticType, string methodName, Type[] typeArguments, params MethodParameter[] methodParameters)
         {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
-
-            var mi = GetInfo(staticType, methodName, typeArguments, parameterTypes);
-            mi.Invoke(null, methodParameters);
+            return TriggerExecuteAndReturn<T>(staticType, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+                ConstructMethodParameterValuesArrayFromObject(methodParameters));
         }
 
         /// <summary>
-        /// Executes a method on an object.
+        /// Executes a method on a static generic object that returns a value.
         /// </summary>
         /// <typeparam name="T">The type of the method return value.</typeparam>
         /// <param name="staticType">The type of the class to execute the method from.</param>
@@ -261,14 +461,12 @@ namespace Ministry.ReflectionHelper
         /// <returns>The return value of the method, or null.</returns>
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
-        public static T Execute<T>(Type staticType, string methodName, Type[] typeArguments, Type[] parameterTypes, params object[] methodParameters)
+        public static T Execute<T>(Type staticType, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
         {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
-
-            var mi = GetInfo(staticType, methodName, typeArguments, parameterTypes);
-            return (T)mi.Invoke(null, methodParameters);
+            return TriggerExecuteAndReturn<T>(staticType, methodName, typeArguments, parameterTypes, methodParameters);
         }
+
+        #endregion
 
         #endregion
 
@@ -452,9 +650,119 @@ namespace Ministry.ReflectionHelper
             var parameterTypes = new Type[methodParameters.Count];
             for (var i = 0; i < methodParameters.Count; i++)
             {
+                if (methodParameters[i] == null)
+                    throw new ArgumentNullException("methodParameters", String.Format("The provided value at position {0} was null. Please use an overload of Execute that explicitly passes the parameter types.", i));
+                
                 parameterTypes[i] = methodParameters[i].GetType();
             }
             return parameterTypes;
+        }
+
+        /// <summary>
+        /// Obtains a default method parameter type set.
+        /// </summary>
+        /// <param name="methodParameters">The method parameters to build the type set from.</param>
+        /// <returns>An array of types to represent the types of the parameters passed into the method.</returns>
+        private static Type[] ConstructMethodParameterTypesArrayFromObject(IList<MethodParameter> methodParameters)
+        {
+            if (methodParameters.Count <= 0) return null;
+            var parameterTypes = new Type[methodParameters.Count];
+            for (var i = 0; i < methodParameters.Count; i++)
+            {
+                if (methodParameters[i].Type == null)
+                    throw new ArgumentNullException("methodParameters", String.Format("The provided value Type at position {0} was null.", i));
+
+                parameterTypes[i] = methodParameters[i].Type;
+            }
+            return parameterTypes;
+        }
+
+        /// <summary>
+        /// Obtains a method parameter values set.
+        /// </summary>
+        /// <param name="methodParameters">The method parameters to build the values set from.</param>
+        /// <returns>An array of values to represent the parameters passed into the method.</returns>
+        private static object[] ConstructMethodParameterValuesArrayFromObject(IList<MethodParameter> methodParameters)
+        {
+            if (methodParameters.Count <= 0) return null;
+            var parameterValues = new object[methodParameters.Count];
+            for (var i = 0; i < methodParameters.Count; i++)
+            {
+                parameterValues[i] = methodParameters[i].Value;
+            }
+            return parameterValues;
+        }
+
+        /// <summary>
+        /// Triggers the execute.
+        /// </summary>
+        /// <param name="value">The instance.</param>
+        /// <param name="methodName">Name of the method.</param>
+        /// <param name="typeArguments">The type arguments.</param>
+        /// <param name="parameterTypes">The parameter types.</param>
+        /// <param name="methodParameters">The method parameters.</param>
+        private static void TriggerExecute(object value, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
+        {
+            CheckParameter.IsNotNull(value, "value");
+            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
+
+            var mi = GetInfo(value.GetType(), methodName, typeArguments, parameterTypes);
+            mi.Invoke(value, methodParameters);
+        }
+
+        /// <summary>
+        /// Triggers the execute.
+        /// </summary>
+        /// <param name="staticType">Type of the static.</param>
+        /// <param name="methodName">Name of the method.</param>
+        /// <param name="typeArguments">The type arguments.</param>
+        /// <param name="parameterTypes">The parameter types.</param>
+        /// <param name="methodParameters">The method parameters.</param>
+        private static void TriggerExecute(Type staticType, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
+        {
+            CheckParameter.IsNotNull(staticType, "staticType");
+            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
+
+            var mi = GetInfo(staticType, methodName, typeArguments, parameterTypes);
+            mi.Invoke(null, methodParameters);
+        }
+
+        /// <summary>
+        /// Triggers the execute and returns the value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="value">The instance.</param>
+        /// <param name="methodName">Name of the method.</param>
+        /// <param name="typeArguments">The type arguments.</param>
+        /// <param name="parameterTypes">The parameter types.</param>
+        /// <param name="methodParameters">The method parameters.</param>
+        /// <returns></returns>
+        private static T TriggerExecuteAndReturn<T>(object value, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
+        {
+            CheckParameter.IsNotNull(value, "value");
+            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
+
+            var mi = GetInfo(value.GetType(), methodName, typeArguments, parameterTypes);
+            return (T)mi.Invoke(value, methodParameters);
+        }
+
+        /// <summary>
+        /// Triggers the execute and returns the value.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="staticType">Type of the static.</param>
+        /// <param name="methodName">Name of the method.</param>
+        /// <param name="typeArguments">The type arguments.</param>
+        /// <param name="parameterTypes">The parameter types.</param>
+        /// <param name="methodParameters">The method parameters.</param>
+        /// <returns></returns>
+        private static T TriggerExecuteAndReturn<T>(Type staticType, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
+        {
+            CheckParameter.IsNotNull(staticType, "staticType");
+            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
+
+            var mi = GetInfo(staticType, methodName, typeArguments, parameterTypes);
+            return (T)mi.Invoke(null, methodParameters);
         }
 
         #endregion
