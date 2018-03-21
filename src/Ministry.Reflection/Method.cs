@@ -15,10 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Globalization;
-using Ministry.StrongTyped;
 
-namespace Ministry.ReflectionHelper
+namespace Ministry.Reflection
 {
     /// <summary>
     /// Functions to simplify access to method data using Reflection.
@@ -35,9 +33,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(object value, string methodName)
-        {
-            TriggerExecute(value, methodName, null, null, null);
-        }
+            => TriggerExecute(value, methodName, null, null, null);
 
         /// <summary>
         /// Executes a method on an object instance that returns nothing.
@@ -49,9 +45,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(object value, string methodName, params object[] methodParameters)
-        {
-            TriggerExecute(value, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
-        }
+            => TriggerExecute(value, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
 
         /// <summary>
         /// Executes a method on an object instance that returns nothing.
@@ -62,10 +56,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(object value, string methodName, params MethodParameter[] methodParameters)
-        {
-            TriggerExecute(value, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+            => TriggerExecute(value, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters),
                 ConstructMethodParameterValuesArrayFromObject(methodParameters));
-        }
 
         /// <summary>
         /// Executes a method on an object instance that returns nothing.
@@ -77,9 +69,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(object value, string methodName, Type[] parameterTypes, object[] methodParameters)
-        {
-            TriggerExecute(value, methodName, null, parameterTypes, methodParameters);
-        }
+            => TriggerExecute(value, methodName, null, parameterTypes, methodParameters);
 
         #region | Statics |
 
@@ -91,9 +81,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(Type staticType, string methodName)
-        {
-            TriggerExecute(staticType, methodName, null, null, null);
-        }
+            => TriggerExecute(staticType, methodName, null, null, null);
 
         /// <summary>
         /// Executes a method on a static object that returns nothing.
@@ -104,9 +92,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(Type staticType, string methodName, params object[] methodParameters)
-        {
-            TriggerExecute(staticType, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
-        }
+            => TriggerExecute(staticType, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
 
         /// <summary>
         /// Executes a method on a static object that returns nothing.
@@ -117,10 +103,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(Type staticType, string methodName, params MethodParameter[] methodParameters)
-        {
-            TriggerExecute(staticType, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters), 
+            => TriggerExecute(staticType, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters), 
                 ConstructMethodParameterValuesArrayFromObject(methodParameters));
-        }
 
         /// <summary>
         /// Executes a method on a static object that returns nothing.
@@ -132,9 +116,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(Type staticType, string methodName, Type[] parameterTypes, object[] methodParameters)
-        {
-            TriggerExecute(staticType, methodName, null, parameterTypes, methodParameters);
-        }
+            => TriggerExecute(staticType, methodName, null, parameterTypes, methodParameters);
 
         #endregion
 
@@ -152,9 +134,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(object value, string methodName)
-        {
-            return TriggerExecuteAndReturn<T>(value, methodName, null, null, null);
-        }
+            => TriggerExecuteAndReturn<T>(value, methodName, null, null, null);
 
         /// <summary>
         /// Executes a method on an object instance that returns a value.
@@ -166,9 +146,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(object value, string methodName, params object[] methodParameters)
-        {
-            return TriggerExecuteAndReturn<T>(value, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
-        }
+            => TriggerExecuteAndReturn<T>(value, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
 
         /// <summary>
         /// Executes a method on an object instance that returns a value.
@@ -181,10 +159,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(object value, string methodName, params MethodParameter[] methodParameters)
-        {
-            return TriggerExecuteAndReturn<T>(value, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+            => TriggerExecuteAndReturn<T>(value, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters),
                 ConstructMethodParameterValuesArrayFromObject(methodParameters));
-        }
 
         /// <summary>
         /// Executes a method on an object instance that returns a value.
@@ -198,9 +174,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(object value, string methodName, Type[] parameterTypes, object[] methodParameters)
-        {
-            return TriggerExecuteAndReturn<T>(value, methodName, null, parameterTypes, methodParameters);
-        }
+            => TriggerExecuteAndReturn<T>(value, methodName, null, parameterTypes, methodParameters);
 
         #region | Statics |
 
@@ -214,9 +188,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(Type staticType, string methodName)
-        {
-            return TriggerExecuteAndReturn<T>(staticType, methodName, null, null, null);
-        }
+            => TriggerExecuteAndReturn<T>(staticType, methodName, null, null, null);
 
         /// <summary>
         /// Executes a method on a static object that returns a value.
@@ -229,9 +201,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(Type staticType, string methodName, params object[] methodParameters)
-        {
-            return TriggerExecuteAndReturn<T>(staticType, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
-        }
+            => TriggerExecuteAndReturn<T>(staticType, methodName, null, ConstructDefaultMethodParameterTypesArray(methodParameters), methodParameters);
 
         /// <summary>
         /// Executes a method on a static object that returns a value.
@@ -244,10 +214,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(Type staticType, string methodName, params MethodParameter[] methodParameters)
-        {
-            return TriggerExecuteAndReturn<T>(staticType, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+            => TriggerExecuteAndReturn<T>(staticType, methodName, null, ConstructMethodParameterTypesArrayFromObject(methodParameters),
                 ConstructMethodParameterValuesArrayFromObject(methodParameters));
-        }
 
         /// <summary>
         /// Executes a method on a static object that returns a value.
@@ -261,9 +229,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(Type staticType, string methodName, Type[] parameterTypes, object[] methodParameters)
-        {
-            return TriggerExecuteAndReturn<T>(staticType, methodName, null, parameterTypes, methodParameters);
-        }
+            => TriggerExecuteAndReturn<T>(staticType, methodName, null, parameterTypes, methodParameters);
 
         #endregion
 
@@ -280,9 +246,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(object value, string methodName, Type[] typeArguments)
-        {
-            TriggerExecute(value, methodName, typeArguments, null, null);
-        }
+            => TriggerExecute(value, methodName, typeArguments, null, null);
 
         /// <summary>
         /// Executes a method on a generic object instance that returns nothing.
@@ -295,10 +259,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(object value, string methodName, Type[] typeArguments, params MethodParameter[] methodParameters)
-        {
-            TriggerExecute(value, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+            => TriggerExecute(value, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
                 ConstructMethodParameterValuesArrayFromObject(methodParameters));
-        }
 
         /// <summary>
         /// Executes a method on a generic object instance that returns nothing.
@@ -311,9 +273,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(object value, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
-        {
-            TriggerExecute(value, methodName, typeArguments, parameterTypes, methodParameters);
-        }
+            => TriggerExecute(value, methodName, typeArguments, parameterTypes, methodParameters);
 
         #region | Statics |
 
@@ -326,9 +286,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(Type staticType, string methodName, Type[] typeArguments)
-        {
-            TriggerExecute(staticType, methodName, typeArguments, null, null);
-        }
+            => TriggerExecute(staticType, methodName, typeArguments, null, null);
 
         /// <summary>
         /// Executes a method on a static generic object that returns nothing.
@@ -340,10 +298,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(Type staticType, string methodName, Type[] typeArguments, params MethodParameter[] methodParameters)
-        {
-            TriggerExecute(staticType, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+            => TriggerExecute(staticType, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
                 ConstructMethodParameterValuesArrayFromObject(methodParameters));
-        }
 
         /// <summary>
         /// Executes a method on a static generic object that returns nothing.
@@ -356,9 +312,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static void Execute(Type staticType, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
-        {
-            TriggerExecute(staticType, methodName, typeArguments, parameterTypes, methodParameters);
-        }
+            => TriggerExecute(staticType, methodName, typeArguments, parameterTypes, methodParameters);
 
         #endregion
 
@@ -377,9 +331,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(object value, string methodName, Type[] typeArguments)
-        {
-            return TriggerExecuteAndReturn<T>(value, methodName, typeArguments, null, null);
-        }
+            => TriggerExecuteAndReturn<T>(value, methodName, typeArguments, null, null);
 
         /// <summary>
         /// Executes a method on a generic object instance that returns a value.
@@ -393,10 +345,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(object value, string methodName, Type[] typeArguments, params MethodParameter[] methodParameters)
-        {
-            return TriggerExecuteAndReturn<T>(value, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+            => TriggerExecuteAndReturn<T>(value, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
                 ConstructMethodParameterValuesArrayFromObject(methodParameters));
-        }
 
         /// <summary>
         /// Executes a method on a generic object instance that returns a value.
@@ -411,9 +361,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(object value, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
-        {
-            return TriggerExecuteAndReturn<T>(value, methodName, typeArguments, parameterTypes, methodParameters);
-        }
+            => TriggerExecuteAndReturn<T>(value, methodName, typeArguments, parameterTypes, methodParameters);
 
         #region | Statics |
 
@@ -428,9 +376,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(Type staticType, string methodName, Type[] typeArguments)
-        {
-            return TriggerExecuteAndReturn<T>(staticType, methodName, typeArguments, null, null);
-        }
+            => TriggerExecuteAndReturn<T>(staticType, methodName, typeArguments, null, null);
 
         /// <summary>
         /// Executes a method on a static generic object that returns a value.
@@ -444,10 +390,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(Type staticType, string methodName, Type[] typeArguments, params MethodParameter[] methodParameters)
-        {
-            return TriggerExecuteAndReturn<T>(staticType, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
+            => TriggerExecuteAndReturn<T>(staticType, methodName, typeArguments, ConstructMethodParameterTypesArrayFromObject(methodParameters),
                 ConstructMethodParameterValuesArrayFromObject(methodParameters));
-        }
 
         /// <summary>
         /// Executes a method on a static generic object that returns a value.
@@ -462,9 +406,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static T Execute<T>(Type staticType, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
-        {
-            return TriggerExecuteAndReturn<T>(staticType, methodName, typeArguments, parameterTypes, methodParameters);
-        }
+            => TriggerExecuteAndReturn<T>(staticType, methodName, typeArguments, parameterTypes, methodParameters);
 
         #endregion
 
@@ -481,9 +423,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static MethodInfo GetInfo(object value, string methodName)
-        {
-            return GetInfo(value.GetType(), methodName);
-        }
+            => GetInfo(value.GetType(), methodName);
 
         /// <summary>
         /// Searches recursively through an object tree for method information.
@@ -494,34 +434,7 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The name of the method provided is invalid.</exception>
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static MethodInfo GetInfo(Type type, string methodName)
-        {
-            CheckParameter.IsNotNull(type, "type");
-            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
-
-            MethodInfo mi;
-
-            try
-            {
-                mi = type.GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static);
-            }
-            catch (AmbiguousMatchException)
-            {
-                mi = GetInfo(type, methodName, new Type[0]);
-            }
-
-            if (mi != null) return mi;
-
-            if (type.BaseType != null)
-            {
-                mi = GetInfo(type.BaseType, methodName);
-            }
-            else
-            {
-                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "The method name specified ({0}) does not exist on the object specified.", methodName));
-            }
-
-            return mi;
-        }
+            => GetInfo(type, methodName, new Type[] { });
 
         /// <summary>
         /// Searches recursively through an object tree for method information.
@@ -537,35 +450,29 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType argument is null or the methodName argument is null or empty.</exception>
         public static MethodInfo GetInfo(Type type, string methodName, Type[] parameterTypes)
         {
-            MethodInfo mi = null;
+            MethodInfo mi;
 
-            var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static);
-            
-            // ReSharper disable once LoopCanBeConvertedToQuery
-            foreach (var method in methods)
+            try
             {
-                if (method.Name != methodName || method.IsGenericMethod) continue;
-                var parameters = method.GetParameters();
-                if (parameters.Length != parameterTypes.Length) continue;
-                var found = !parameters.Where((t, i) => !t.ParameterType.IsAssignableFrom(parameterTypes[i])).Any();
-                if (!found) continue;
-                mi = method;
-                break;
+                mi = type.ThrowIfNull(nameof(type))
+                    .GetRuntimeMethod(methodName.ThrowIfNullOrEmpty(nameof(methodName)), parameterTypes);
+            }
+            catch (AmbiguousMatchException)
+            {
+                mi = GetInfo(type, methodName, new Type[0]);
             }
 
             if (mi != null) return mi;
-            if (type.BaseType != null)
-            {
-                mi = GetInfo(type.BaseType, methodName, parameterTypes);
-            }
+
+            if (type.GetTypeInfo().BaseType != null)
+                mi = GetInfo(type.GetTypeInfo().BaseType, methodName);
             else
-            {
-                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "The method name specified ({0}) does not exist on the object specified.", methodName));
-            }
+                throw new ArgumentException(
+                    $"The method name specified ({methodName}) does not exist on the object specified.");
 
             return mi;
-        }
-
+        }        
+        
         /// <summary>
         /// Searches recursively through an object tree for method information.
         /// </summary>
@@ -581,40 +488,34 @@ namespace Ministry.ReflectionHelper
             MethodInfo mi = null;
 
             if (typeArguments == null && parameterTypes == null)
+                return GetInfo(type, methodName);
+
+            if (typeArguments == null)
+                return GetInfo(type, methodName, parameterTypes);
+
+            var methods = type.ThrowIfNull(nameof(type)).GetRuntimeMethods().Where(
+                m => m.Name == methodName.ThrowIfNullOrEmpty(nameof(methodName))
+                && m.GetGenericArguments().Length == typeArguments.Length);
+
+            foreach (var method in methods)
             {
-                mi = GetInfo(type, methodName);
-            }
-            else if (typeArguments == null)
-            {
-                mi = GetInfo(type, methodName, parameterTypes);
-            }
-            else
-            {
-                var methods = type.GetMethods(BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static);
-                foreach (var method in methods)
-                {
-                    if (method.Name != methodName) continue;
-                    if (method.GetGenericArguments().Length != typeArguments.Length) continue;
-                    var generic = method.MakeGenericMethod(typeArguments);
-                    var parameters = generic.GetParameters();
-                    if (parameterTypes == null) parameterTypes = new Type[0];
-                    if (parameters.Length != parameterTypes.Length) continue;
-                    var found = !parameters.Where((t, i) => !t.ParameterType.IsAssignableFrom(parameterTypes[i])).Any();
-                    if (!found) continue;
-                    mi = generic;
-                    break;
-                }
+                var generic = method.MakeGenericMethod(typeArguments);
+                var parameters = generic.GetParameters();
+
+                if (parameterTypes == null) parameterTypes = new Type[0];
+                if (parameters.Length != parameterTypes.Length) continue;
+                var found = !parameters.Where((t, i) => !t.ParameterType.GetTypeInfo().IsAssignableFrom(parameterTypes[i])).Any();
+                if (!found) continue;
+                mi = generic;
+                break;
             }
 
             if (mi != null) return mi;
-            if (type.BaseType != null)
-            {
-                mi = GetInfo(type.BaseType, methodName, typeArguments, parameterTypes);
-            }
+            if (type.GetTypeInfo().BaseType != null)
+                mi = GetInfo(type.GetTypeInfo().BaseType, methodName, parameterTypes);
             else
-            {
-                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "The method name specified ({0}) does not exist on the object specified.", methodName));
-            }
+                throw new ArgumentException($"The method name specified ({methodName}) does not exist on the object specified.");
+
             return mi;
         }
 
@@ -630,8 +531,10 @@ namespace Ministry.ReflectionHelper
         /// <returns>An array of parameter information for the specified method.</returns>
         public static ParameterInfo[] GetParameters(object value, string methodName)
         {
-            var mi = value.GetType().GetMethod(methodName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static);
-            if (mi == null) throw new InvalidOperationException(String.Format(CultureInfo.InvariantCulture, "The method name specified ({0}) does not exist on the object specified.", methodName));
+            var mi = value.ThrowIfNull(nameof(value)).GetType().GetRuntimeMethods().FirstOrDefault(
+                m => m.Name == methodName.ThrowIfNullOrEmpty(nameof(methodName)));
+
+            if (mi == null) throw new InvalidOperationException($"The method name specified ({methodName}) does not exist on the object specified.");
             return mi.GetParameters();
         }
 
@@ -651,7 +554,7 @@ namespace Ministry.ReflectionHelper
             for (var i = 0; i < methodParameters.Count; i++)
             {
                 if (methodParameters[i] == null)
-                    throw new ArgumentNullException("methodParameters", String.Format("The provided value at position {0} was null. Please use an overload of Execute that explicitly passes the parameter types.", i));
+                    throw new ArgumentNullException(nameof(methodParameters), $"The provided value at position {i} was null. Please use an overload of Execute that explicitly passes the parameter types.");
                 
                 parameterTypes[i] = methodParameters[i].GetType();
             }
@@ -670,7 +573,7 @@ namespace Ministry.ReflectionHelper
             for (var i = 0; i < methodParameters.Count; i++)
             {
                 if (methodParameters[i].Type == null)
-                    throw new ArgumentNullException("methodParameters", String.Format("The provided value Type at position {0} was null.", i));
+                    throw new ArgumentNullException(nameof(methodParameters), $"The provided value Type at position {i} was null.");
 
                 parameterTypes[i] = methodParameters[i].Type;
             }
@@ -702,13 +605,7 @@ namespace Ministry.ReflectionHelper
         /// <param name="parameterTypes">The parameter types.</param>
         /// <param name="methodParameters">The method parameters.</param>
         private static void TriggerExecute(object value, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
-
-            var mi = GetInfo(value.GetType(), methodName, typeArguments, parameterTypes);
-            mi.Invoke(value, methodParameters);
-        }
+            => GetInfo(value.GetType(), methodName, typeArguments, parameterTypes).Invoke(value, methodParameters);
 
         /// <summary>
         /// Triggers the execute.
@@ -719,13 +616,8 @@ namespace Ministry.ReflectionHelper
         /// <param name="parameterTypes">The parameter types.</param>
         /// <param name="methodParameters">The method parameters.</param>
         private static void TriggerExecute(Type staticType, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
-        {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
-
-            var mi = GetInfo(staticType, methodName, typeArguments, parameterTypes);
-            mi.Invoke(null, methodParameters);
-        }
+            => GetInfo(staticType, methodName, typeArguments, parameterTypes)
+            .Invoke(null, methodParameters);
 
         /// <summary>
         /// Triggers the execute and returns the value.
@@ -738,13 +630,8 @@ namespace Ministry.ReflectionHelper
         /// <param name="methodParameters">The method parameters.</param>
         /// <returns></returns>
         private static T TriggerExecuteAndReturn<T>(object value, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
-
-            var mi = GetInfo(value.GetType(), methodName, typeArguments, parameterTypes);
-            return (T)mi.Invoke(value, methodParameters);
-        }
+            => (T)GetInfo(value.GetType(), methodName, typeArguments, parameterTypes)
+                .Invoke(value, methodParameters);
 
         /// <summary>
         /// Triggers the execute and returns the value.
@@ -757,13 +644,8 @@ namespace Ministry.ReflectionHelper
         /// <param name="methodParameters">The method parameters.</param>
         /// <returns></returns>
         private static T TriggerExecuteAndReturn<T>(Type staticType, string methodName, Type[] typeArguments, Type[] parameterTypes, object[] methodParameters)
-        {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(methodName, "methodName");
-
-            var mi = GetInfo(staticType, methodName, typeArguments, parameterTypes);
-            return (T)mi.Invoke(null, methodParameters);
-        }
+            => (T)GetInfo(staticType, methodName, typeArguments, parameterTypes)
+                .Invoke(null, methodParameters);
 
         #endregion
     }

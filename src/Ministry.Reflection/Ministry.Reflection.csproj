@@ -1,0 +1,23 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netstandard1.6</TargetFramework>
+    <Authors>Keith Jackson</Authors>
+    <Company>Minotech Ltd. (The Ministry of Technology)</Company>
+    <Description>Reflection helper library</Description>
+    <GeneratePackageOnBuild>True</GeneratePackageOnBuild>
+    <Copyright>2018 Minotech Ltd.</Copyright>
+    <RepositoryUrl>https://github.com/ministryotech/reflectionhelper.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <AssemblyVersion>4.0.0.0</AssemblyVersion>
+    <FileVersion>4.0.0.0</FileVersion>
+    <Version>4.0.0</Version>
+    <PackageLicenseUrl>http://www.opensource.org/licenses/MIT</PackageLicenseUrl>
+    <PackageProjectUrl>http://www.ministryotech.co.uk/developers/open-source-projects/</PackageProjectUrl>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Ministry.FluentGuard" Version="1.0.0" />
+  </ItemGroup>
+
+</Project>

@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Ministry.ReflectionHelper
+namespace Ministry.Reflection
 {
     /// <summary>
     /// Represents a method parameter.

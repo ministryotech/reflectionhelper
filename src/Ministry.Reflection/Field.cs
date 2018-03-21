@@ -12,11 +12,10 @@
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
-using System.Globalization;
-using Ministry.StrongTyped;
 
-namespace Ministry.ReflectionHelper
+namespace Ministry.Reflection
 {
     /// <summary>
     /// Functions to simplify access to field data using Reflection.
@@ -32,13 +31,8 @@ namespace Ministry.ReflectionHelper
         /// <param name="value">The object to look for a field on.</param>
         /// <param name="fieldName">The name of the field to look for.</param>
         public static bool Exists<T>(T value, string fieldName)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(fieldName, "fieldName");
-
-            var fi = GetInfo(value.GetType(), fieldName, true);
-            return (fi != null);
-        }
+            => GetInfo(value.ThrowIfNull(nameof(value)).GetType(), 
+                fieldName.ThrowIfNullOrEmpty(nameof(fieldName)), true) != null;
 
         /// <summary>
         /// Confirms the existence of a field on an object.
@@ -46,13 +40,8 @@ namespace Ministry.ReflectionHelper
         /// <param name="staticType">The type to look for a field on.</param>
         /// <param name="fieldName">The name of the field to look for.</param>
         public static bool Exists(Type staticType, string fieldName)
-        {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(fieldName, "fieldName");
-
-            var fi = GetInfo(staticType, fieldName, true);
-            return (fi != null);
-        }
+            => GetInfo(staticType.ThrowIfNull(nameof(staticType)),
+                fieldName.ThrowIfNullOrEmpty(nameof(fieldName)), true) != null;
 
         #endregion
 
@@ -67,13 +56,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The value or fieldName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The fieldName specified is invalid.</exception>
         public static object Get(object value, string fieldName)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(fieldName, "fieldName");
-
-            var fi = GetInfo(value.GetType(), fieldName);
-            return fi.GetValue(value);
-        }
+            => GetInfo(value.ThrowIfNull(nameof(value)).GetType(),
+                fieldName.ThrowIfNullOrEmpty(nameof(fieldName)), true).GetValue(value);
 
         /// <summary>
         /// Gets the value of an object's field.
@@ -85,14 +69,9 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The value or fieldName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The fieldName specified is invalid.</exception>
         public static T Get<T>(object value, string fieldName)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(fieldName, "fieldName");
-
-            var retVal = default(T);
-            if (Get(value, fieldName) is T) retVal = (T)Get(value, fieldName);
-            return retVal;
-        }
+            => Get(value.ThrowIfNull(nameof(value)), fieldName.ThrowIfNullOrEmpty(nameof(fieldName))) is T 
+                ? (T)Get(value, fieldName) 
+                : default(T);
 
         /// <summary>
         /// Gets the value of an object's field.
@@ -103,13 +82,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType or fieldName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The fieldName specified is invalid.</exception>
         public static object Get(Type staticType, string fieldName)
-        {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(fieldName, "fieldName");
-
-            var fi = GetInfo(staticType, fieldName);
-            return fi.GetValue(null);
-        }
+            => GetInfo(staticType.ThrowIfNull(nameof(staticType)),
+                fieldName.ThrowIfNullOrEmpty(nameof(fieldName)), true).GetValue(null);
 
         /// <summary>
         /// Gets the value of an object's field.
@@ -121,14 +95,9 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType or fieldName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The fieldName specified is invalid.</exception>
         public static T Get<T>(Type staticType, string fieldName)
-        {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(fieldName, "fieldName");
-
-            var retVal = default(T);
-            if (Get(staticType, fieldName) is T) retVal = (T)Get(staticType, fieldName);
-            return retVal;
-        }
+            => Get(staticType.ThrowIfNull(nameof(staticType)), fieldName.ThrowIfNullOrEmpty(nameof(fieldName))) is T
+                ? (T)Get(staticType, fieldName)
+                : default(T);
 
         #endregion
 
@@ -145,12 +114,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The type or fieldName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The fieldName specified is invalid.</exception>
         public static FieldInfo GetInfo(object value, string fieldName)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(fieldName, "fieldName");
-
-            return GetInfo(value.GetType(), fieldName);
-        }
+            => GetInfo(value.ThrowIfNull(nameof(value)).GetType(), 
+                fieldName.ThrowIfNullOrEmpty(nameof(fieldName)));
 
         /// <summary>
         /// Searches recursively through an object tree for field information.
@@ -161,22 +126,17 @@ namespace Ministry.ReflectionHelper
         /// <returns>A FieldInfo object for analysing the field data.</returns>
         /// <exception cref="System.ArgumentNullException">The type or fieldName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The fieldName specified is invalid.</exception>
+        [SuppressMessage("ReSharper", "ParameterOnlyUsedForPreconditionCheck.Local")]
         private static FieldInfo GetInfo(Type type, string fieldName, bool suppressExceptions = false)
         {
-            CheckParameter.IsNotNull(type, "type");
-            CheckParameter.IsNotNullOrEmpty(fieldName, "fieldName");
+            var fi = type.GetRuntimeField(fieldName);
 
-            var fi = type.GetField(fieldName, BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly | BindingFlags.Static);
             if (fi != null) return fi;
 
-            if (type.BaseType != null)
-            {
-                fi = GetInfo(type.BaseType, fieldName, suppressExceptions);
-            }
+            if (type.GetTypeInfo().BaseType != null)
+                fi = GetInfo(type.GetTypeInfo().BaseType, fieldName, suppressExceptions);
             else if (!suppressExceptions)
-            {
-                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture, "The field name specified ({0}) does not exist on the object specified.", fieldName), "fieldName");
-            }
+                throw new ArgumentException($"The field name specified ({fieldName}) does not exist on the object specified.", nameof(fieldName));
 
             return fi;
         }
@@ -196,13 +156,9 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The value or fieldName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The fieldName specified is invalid.</exception>
         public static void Set<T, TField>(T value, string fieldName, TField fieldValue)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(fieldName, "fieldName");
-
-            var fi = GetInfo(value.GetType(), fieldName);
-            fi.SetValue(value, fieldValue);
-        }
+            => GetInfo(value.ThrowIfNull(nameof(value)).GetType(), 
+                fieldName.ThrowIfNullOrEmpty(nameof(fieldName)))
+                .SetValue(value, fieldValue);
 
         /// <summary>
         /// Sets the value of an object's field.
@@ -214,13 +170,9 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType or fieldName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The fieldName specified is invalid.</exception>
         public static void Set<TField>(Type staticType, string fieldName, TField fieldValue)
-        {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(fieldName, "fieldName");
-
-            var fi = GetInfo(staticType, fieldName);
-            fi.SetValue(null, fieldValue);
-        }
+            => GetInfo(staticType.ThrowIfNull(nameof(staticType)),
+                fieldName.ThrowIfNullOrEmpty(nameof(fieldName)))
+                .SetValue(null, fieldValue);
 
         #endregion
     }

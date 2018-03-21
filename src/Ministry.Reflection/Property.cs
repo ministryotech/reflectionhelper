@@ -13,10 +13,8 @@
 
 using System;
 using System.Reflection;
-using System.Globalization;
-using Ministry.StrongTyped;
 
-namespace Ministry.ReflectionHelper
+namespace Ministry.Reflection
 {
     /// <summary>
     /// Functions to simplify access to property data using Reflection.
@@ -34,13 +32,9 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The value or propertyName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The propertyName specified is invalid.</exception>
         public static object Get(object value, string propertyName)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
-
-            var pi = GetInfo(value.GetType(), propertyName, PropertyAccessRequired.Get);
-            return pi.GetValue(value, null);
-        }
+            => GetInfo(value.ThrowIfNull(nameof(value)).GetType(),
+                propertyName.ThrowIfNullOrEmpty(nameof(propertyName)))
+                .GetValue(value, null);
 
         /// <summary>
         /// Gets the value of an object's property.
@@ -52,14 +46,9 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The value or propertyName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The propertyName specified is invalid.</exception>
         public static T Get<T>(object value, string propertyName)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
-
-            var retVal = default(T);
-            if (Get(value, propertyName) is T) retVal = (T) Get(value, propertyName);
-            return retVal;
-        }
+            => Get(value.ThrowIfNull(nameof(value)), propertyName.ThrowIfNullOrEmpty(nameof(propertyName))) is T
+                ? (T)Get(value, propertyName)
+                : default(T);
 
         /// <summary>
         /// Gets the value of an object's property.
@@ -70,13 +59,9 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType or propertyName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The propertyName specified is invalid.</exception>
         public static object Get(Type staticType, string propertyName)
-        {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
-
-            var pi = GetInfo(staticType, propertyName, PropertyAccessRequired.Get);
-            return pi.GetValue(null, null);
-        }
+            => GetInfo(staticType.ThrowIfNull(nameof(staticType)),
+                propertyName.ThrowIfNullOrEmpty(nameof(propertyName)))
+                .GetValue(null, null);
 
         /// <summary>
         /// Gets the value of an object's property.
@@ -88,14 +73,9 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The staticType or propertyName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The propertyName specified is invalid.</exception>
         public static T Get<T>(Type staticType, string propertyName)
-        {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
-
-            var retVal = default(T);
-            if (Get(staticType, propertyName) is T) retVal = (T) Get(staticType, propertyName);
-            return retVal;
-        }
+            => Get(staticType.ThrowIfNull(nameof(staticType)), propertyName.ThrowIfNullOrEmpty(nameof(propertyName))) is T
+                ? (T)Get(staticType, propertyName)
+                : default(T);
 
         #endregion
 
@@ -110,39 +90,8 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentNullException">The type or propertyName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The propertyName specified is invalid.</exception>
         public static PropertyInfo GetInfo(object value, string propertyName)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
-
-            return GetInfo(value.GetType(), propertyName);
-        }
-
-        /// <summary>
-        /// Searches recursively through an object tree for property information.
-        /// </summary>
-        /// <param name="type">The type of the object to get the property from.</param>
-        /// <param name="propertyName">The name of the property to search for.</param>
-        /// <returns>A PropertyInfo object for analysing the property data.</returns>
-        /// <exception cref="System.ArgumentNullException">The type or propertyName parameter is null.</exception>
-        /// <exception cref="System.ArgumentException">The propertyName specified is invalid.</exception>
-        public static PropertyInfo GetInfo(Type type, string propertyName)
-        {
-            return GetInfo(type, propertyName, PropertyAccessRequired.Get, false);
-        }
-
-        /// <summary>
-        /// Searches recursively through an object tree for property information.
-        /// </summary>
-        /// <param name="type">The type of the object to get the property from.</param>
-        /// <param name="propertyName">The name of the property to search for.</param>
-        /// <param name="access">The required property access.</param>
-        /// <returns>A PropertyInfo object for analysing the property data.</returns>
-        /// <exception cref="System.ArgumentNullException">The type or propertyName parameter is null.</exception>
-        /// <exception cref="System.ArgumentException">The propertyName specified is invalid.</exception>
-        public static PropertyInfo GetInfo(Type type, string propertyName, PropertyAccessRequired access)
-        {
-            return GetInfo(type, propertyName, access, false);
-        }
+            => GetInfo(value.ThrowIfNull(nameof(value)).GetType(), 
+                propertyName.ThrowIfNullOrEmpty(nameof(propertyName)));
 
         /// <summary>
         /// Searches recursively through an object tree for property information.
@@ -154,25 +103,22 @@ namespace Ministry.ReflectionHelper
         /// <returns>A PropertyInfo object for analysing the property data.</returns>
         /// <exception cref="System.ArgumentNullException">The type or propertyName parameter is null.</exception>
         /// <exception cref="System.ArgumentException">The propertyName specified is invalid.</exception>
-        private static PropertyInfo GetInfo(Type type, string propertyName, PropertyAccessRequired access,
-            bool suppressExceptions)
+        private static PropertyInfo GetInfo(Type type, string propertyName, 
+            PropertyAccessRequired access = PropertyAccessRequired.Get,
+            bool suppressExceptions = false)
         {
-            CheckParameter.IsNotNull(type, "type");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
-
-            var pi = type.GetProperty(propertyName,
+            var pi = type.ThrowIfNull(nameof(type)).GetTypeInfo().GetProperty(propertyName.ThrowIfNullOrEmpty(nameof(propertyName)),
                 BindingFlags.NonPublic | BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly |
                 BindingFlags.Static);
             var hasNoAccess = (pi != null && !HasRequiredAccess(pi, access));
             if (pi != null && !hasNoAccess) return pi;
-            if (type.BaseType != null)
+            if (type.GetTypeInfo().BaseType != null)
             {
-                pi = GetInfo(type.BaseType, propertyName, access, suppressExceptions);
+                pi = GetInfo(type.GetTypeInfo().BaseType, propertyName, access, suppressExceptions);
             }
             else if (!suppressExceptions)
             {
-                throw new ArgumentException(String.Format(CultureInfo.InvariantCulture,
-                    "The property name specified ({0}) does not exist on the object specified.", propertyName));
+                throw new ArgumentException($"The property name specified ({propertyName}) does not exist on the object specified.");
             }
 
             return pi;
@@ -190,12 +136,12 @@ namespace Ministry.ReflectionHelper
         /// <param name="propertyName">The name of the property to look for.</param>
         public static bool Exists<T>(T value, string propertyName)
         {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
+            value.ThrowIfNull(nameof(value));
+            propertyName.ThrowIfNullOrEmpty(nameof(propertyName));
 
             var pi = GetInfo(value.GetType(), propertyName, PropertyAccessRequired.Get, true) ??
                      GetInfo(value.GetType(), propertyName, PropertyAccessRequired.Set, true);
-            return (pi != null);
+            return pi != null;
         }
 
         /// <summary>
@@ -205,12 +151,12 @@ namespace Ministry.ReflectionHelper
         /// <param name="propertyName">The name of the property to look for.</param>
         public static bool Exists(Type staticType, string propertyName)
         {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
+            staticType.ThrowIfNull(nameof(staticType));
+            propertyName.ThrowIfNullOrEmpty(nameof(propertyName));
 
-            var fi = GetInfo(staticType, propertyName, PropertyAccessRequired.Get, true) ??
+            var pi = GetInfo(staticType, propertyName, PropertyAccessRequired.Get, true) ??
                      GetInfo(staticType, propertyName, PropertyAccessRequired.Set, true);
-            return (fi != null);
+            return pi != null;
         }
 
         #endregion
@@ -224,13 +170,7 @@ namespace Ministry.ReflectionHelper
         /// <param name="propertyName">The name of the property to get.</param>
         /// <returns>A flag to indicate if a property is read only.</returns>
         public static bool IsReadOnly(object value, string propertyName)
-        {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
-
-            var pi = GetInfo(value.GetType(), propertyName, PropertyAccessRequired.Get);
-            return !HasRequiredAccess(pi, PropertyAccessRequired.Set);
-        }
+            => !HasRequiredAccess(GetInfo(value.GetType(), propertyName), PropertyAccessRequired.Set);
 
         /// <summary>
         /// Determines if a property is read only.
@@ -239,13 +179,7 @@ namespace Ministry.ReflectionHelper
         /// <param name="propertyName">The name of the property to get.</param>
         /// <returns>A flag to indicate if a property is read only.</returns>
         public static bool IsReadOnly(Type staticType, string propertyName)
-        {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
-
-            var pi = GetInfo(staticType, propertyName, PropertyAccessRequired.Get);
-            return !HasRequiredAccess(pi, PropertyAccessRequired.Set);
-        }
+            => !HasRequiredAccess(GetInfo(staticType, propertyName), PropertyAccessRequired.Set);
 
         #endregion
 
@@ -261,14 +195,11 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The propertyName specified is invalid and either does not exist or is read only.</exception>
         public static void Set(object value, string propertyName, object propertyValue)
         {
-            CheckParameter.IsNotNull(value, "value");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
+            if (IsReadOnly(value.ThrowIfNull(nameof(value)), propertyName.ThrowIfNullOrEmpty(nameof(propertyName))))
+                throw new InvalidOperationException($"The property name specified ({propertyName}) does not exist on the object specified.");
 
-            if (IsReadOnly(value, propertyName))
-                throw new InvalidOperationException(
-                    "The property name specified ({0}) does not exist on the object specified.");
-            var pi = GetInfo(value.GetType(), propertyName, PropertyAccessRequired.Set);
-            pi.SetValue(value, propertyValue, null);
+            GetInfo(value.GetType(), propertyName, PropertyAccessRequired.Set)
+                .SetValue(value, propertyValue, null);
         }
 
         /// <summary>
@@ -281,14 +212,11 @@ namespace Ministry.ReflectionHelper
         /// <exception cref="System.ArgumentException">The propertyName specified is invalid and either does not exist or is read only.</exception>
         public static void Set(Type staticType, string propertyName, object propertyValue)
         {
-            CheckParameter.IsNotNull(staticType, "staticType");
-            CheckParameter.IsNotNullOrEmpty(propertyName, "propertyName");
+            if (IsReadOnly(staticType.ThrowIfNull(nameof(staticType)), propertyName.ThrowIfNullOrEmpty(nameof(propertyName))))
+                throw new InvalidOperationException($"The property name specified ({propertyName}) does not exist on the object specified.");
 
-            if (IsReadOnly(staticType, propertyName))
-                throw new InvalidOperationException(
-                    "The property name specified ({0}) does not exist on the object specified.");
-            var pi = GetInfo(staticType, propertyName, PropertyAccessRequired.Set);
-            pi.SetValue(null, propertyValue, null);
+            GetInfo(staticType, propertyName, PropertyAccessRequired.Set)
+                .SetValue(null, propertyValue, null);
         }
 
         #endregion
@@ -302,9 +230,7 @@ namespace Ministry.ReflectionHelper
         /// <param name="access">The access to check for.</param>
         /// <returns>A flag to indicate if the PropertyInfo passed has the required type of access.</returns>
         private static bool HasRequiredAccess(PropertyInfo pi, PropertyAccessRequired access)
-        {
-            return (access == PropertyAccessRequired.Get ? pi.CanRead : pi.CanWrite);
-        }
+            => access == PropertyAccessRequired.Get ? pi.CanRead : pi.CanWrite;
 
         #endregion
 
@@ -324,9 +250,7 @@ namespace Ministry.ReflectionHelper
             /// <exception cref="System.ArgumentNullException">The value or indexerName parameter is null.</exception>
             /// <exception cref="System.ArgumentException">The indexerName specified is invalid.</exception>
             public static object GetItem(object value, int index)
-            {
-                return GetItem(value, "Item", index);
-            }
+                => GetItem(value, "Item", index);
 
             /// <summary>
             /// Gets the value of an item within an object's indexed property.
@@ -338,9 +262,7 @@ namespace Ministry.ReflectionHelper
             /// <exception cref="System.ArgumentNullException">The value or indexerName parameter is null.</exception>
             /// <exception cref="System.ArgumentException">The indexerName specified is invalid.</exception>
             public static T GetItem<T>(object value, int index)
-            {
-                return GetItem<T>(value, "Item", index);
-            }
+                => GetItem<T>(value, "Item", index);
 
             /// <summary>
             /// Gets the value of an item within an object's indexed property.
@@ -352,13 +274,9 @@ namespace Ministry.ReflectionHelper
             /// <exception cref="System.ArgumentNullException">The value or indexerName parameter is null.</exception>
             /// <exception cref="System.ArgumentException">The indexerName specified is invalid.</exception>
             public static object GetItem(object value, string indexerName, int index)
-            {
-                CheckParameter.IsNotNull(value, "value");
-                CheckParameter.IsNotNullOrEmpty(indexerName, "indexerName");
-
-                var pi = GetInfo(value.GetType(), indexerName, PropertyAccessRequired.Get);
-                return pi.GetValue(value, new object[] {index});
-            }
+                => GetInfo(value.ThrowIfNull(nameof(value)).GetType(),
+                    indexerName.ThrowIfNullOrEmpty(nameof(indexerName)))
+                    .GetValue(value, new object[] {index});
 
             /// <summary>
             /// Gets the value of an item within an object's indexed property.
@@ -371,14 +289,9 @@ namespace Ministry.ReflectionHelper
             /// <exception cref="System.ArgumentNullException">The value or indexerName parameter is null.</exception>
             /// <exception cref="System.ArgumentException">The indexerName specified is invalid.</exception>
             public static T GetItem<T>(object value, string indexerName, int index)
-            {
-                CheckParameter.IsNotNull(value, "value");
-                CheckParameter.IsNotNullOrEmpty(indexerName, "indexerName");
-
-                var retVal = default(T);
-                if (GetItem(value, indexerName, index) is T) retVal = (T) GetItem(value, indexerName, index);
-                return retVal;
-            }
+                => GetItem(value.ThrowIfNull(nameof(value)), indexerName.ThrowIfNullOrEmpty(nameof(indexerName)), index) is T
+                    ? (T) GetItem(value, indexerName, index)
+                    : default(T);
 
             #endregion
 
@@ -395,9 +308,7 @@ namespace Ministry.ReflectionHelper
             /// <exception cref="System.ArgumentNullException">The value or indexerName parameter is null.</exception>
             /// <exception cref="System.ArgumentException">The indexerName specified is invalid and either does not exist or is read only.</exception>
             public static void SetItem<T, TIndexerItem>(T value, int index, TIndexerItem indexerValue)
-            {
-                SetItem(value, "Item", index, indexerValue);
-            }
+                => SetItem(value, "Item", index, indexerValue);
 
             /// <summary>
             /// Sets the value of an object's indexer.
@@ -410,15 +321,10 @@ namespace Ministry.ReflectionHelper
             /// <param name="index">The index of the indexer to set.</param>
             /// <exception cref="System.ArgumentNullException">The value or indexerName parameter is null.</exception>
             /// <exception cref="System.ArgumentException">The indexerName specified is invalid and either does not exist or is read only.</exception>
-            public static void SetItem<T, TIndexerItem>(T value, string indexerName, int index,
-                TIndexerItem indexerValue)
-            {
-                CheckParameter.IsNotNull(value, "value");
-                CheckParameter.IsNotNullOrEmpty(indexerName, "indexerName");
-
-                var pi = GetInfo(value.GetType(), indexerName, PropertyAccessRequired.Set);
-                pi.SetValue(value, indexerValue, new object[] {index});
-            }
+            public static void SetItem<T, TIndexerItem>(T value, string indexerName, int index, TIndexerItem indexerValue)
+                => GetInfo(value.ThrowIfNull(nameof(value)).GetType(),
+                    indexerName.ThrowIfNullOrEmpty(indexerName), PropertyAccessRequired.Set)
+                    .SetValue(value, indexerValue, new object[] {index});
 
             #endregion
         }
