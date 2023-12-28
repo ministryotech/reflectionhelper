@@ -1,20 +1,19 @@
 ﻿using System;
 
-namespace Ministry.Reflection
+namespace Ministry.Reflection;
+
+/// <summary>
+/// Represents a method parameter.
+/// </summary>
+public class MethodParameter
 {
     /// <summary>
-    /// Represents a method parameter.
+    /// Gets or sets the value.
     /// </summary>
-    public class MethodParameter
-    {
-        /// <summary>
-        /// Gets or sets the value.
-        /// </summary>
-        public object Value { get; set; }
+    public object Value { get; set; }
 
-        /// <summary>
-        /// Gets or sets the type.
-        /// </summary>
-        public Type Type { get; set; }
-    }
+    /// <summary>
+    /// Gets or sets the type.
+    /// </summary>
+    public Type Type { get; set; }
 }

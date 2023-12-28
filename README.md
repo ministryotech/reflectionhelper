@@ -79,6 +79,7 @@ That's the key functionality of the Ministry.ReflectionHelper classes. If you wa
 
 ## Upgrading v3.x to v4.x / v5.x
 If you are upgrading from v2 or v3 to v4 or v5 you may find breaking changes. In v4 we have added some helpful extension methods and moved support away from the stanadrd .net framework to NETSTandard 1.6 to support dotnet core.
+v5 No longer supports .net Standard and .net Framework.
 
 ## The Ministry of Technology Open Source Products
 Welcome to The Ministry of Technology open source products. All open source Ministry of Technology products are distributed under the MIT License for maximum re-usability.
