@@ -77,18 +77,15 @@ Provides you with the info about the parameters for a given method.
 ## Summary
 That's the key functionality of the Ministry.ReflectionHelper classes. If you want to do any kind of deep reflection and you don't have the joy of the Dynamic Language Runtime to help you out then I hope you'll find some of the methods in these classes really useful. If you want to find out any more, simply check out the source code.
 
-## Upgrading v3.x to v4.x
-If you are upgrading from v2 or v3 to v4 you may find breaking changes. In v4 we have added some helpful extension methods and moved support away from the stanadrd .net framework to NETSTandard 1.6 to support dotnet core.
+## Upgrading v3.x to v4.x / v5.x
+If you are upgrading from v2 or v3 to v4 or v5 you may find breaking changes. In v4 we have added some helpful extension methods and moved support away from the stanadrd .net framework to NETSTandard 1.6 to support dotnet core.
 
 ## The Ministry of Technology Open Source Products
-Welcome to The Ministry of Technology open source products. All open source Ministry of Technology products are distributed under the MIT License for maximum re-usability. Details on more of our products and services can be found on our website at http://www.minotech.co.uk
-
+Welcome to The Ministry of Technology open source products. All open source Ministry of Technology products are distributed under the MIT License for maximum re-usability.
 Our other open source repositories can be found here...
 
 * [https://github.com/ministryotech](https://github.com/ministryotech)
 * [https://github.com/tiefling](https://github.com/tiefling)
-
-Newer content prefers Github. Bitbucket is no longer actively used.
 
 ### Where can I get it?
 You can download the package for this project from any of the following package managers...
@@ -99,4 +96,4 @@ You can download the package for this project from any of the following package 
 If you would like to contribute to the project, please contact me.
 
 ### Who do I talk to?
-* Keith Jackson - keith@minotech.co.uk
+* Keith Jackson - temporal-net@live.co.uk
